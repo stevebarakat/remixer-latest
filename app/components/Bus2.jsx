@@ -33,16 +33,11 @@ export default function Bus2({
 
   useEffect(() => {
     if (!busTwoActive) {
-      setMasterMeterVal(-112);
+      if (state !== "started")
+        setTimeout(() => cancelAnimationFrame(requestRef.current), 1000);
       return cancelAnimationFrame(requestRef.current);
     }
-    if (state === "started") {
-      requestAnimationFrame(animateMeter);
-    } else {
-      return () => {
-        cancelAnimationFrame(requestRef.current);
-      };
-    }
+    requestAnimationFrame(animateMeter);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state, busTwoActive]);
 

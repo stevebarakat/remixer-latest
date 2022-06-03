@@ -13,7 +13,6 @@ function ChannelStrip({
   meterVal,
   state,
   toggleBusOne,
-  toggleBusTwo,
 }) {
   const fetcher = useFetcher();
   const [isMuted, setIsMuted] = useState(track.mute);
@@ -227,16 +226,7 @@ function ChannelStrip({
           Bus 1
         </label>
       </div>
-      <div className="bus">
-        <input
-          id={`${index}busTwo${track.path}`}
-          type="checkbox"
-          onChange={toggleBusTwo}
-        />
-        <label className="label" htmlFor={`${index}busTwo${track.path}`}>
-          Bus 2
-        </label>
-      </div>
+
       <div className="pfl">
         <input
           id={`postFader${track.path}`}

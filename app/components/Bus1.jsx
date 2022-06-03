@@ -8,7 +8,6 @@ function Bus1({
   state,
   busOneChannel,
   handleSetBusOneFxOneChoice,
-  handleSetBusOneFxTwoChoice,
   busOneActive,
   busOneMeter,
 }) {
@@ -16,8 +15,6 @@ function Bus1({
   const [masterMeterVal, setMasterMeterVal] = useState(-12);
   const [masterVol, setMasterVol] = useState(0);
   const [busOneFxOneOpen, setBusOneFxOneOpen] = useState(false);
-
-  console.log("busOneFxOneOpen", busOneFxOneOpen);
 
   if (busOneChannel !== null) {
     busOneChannel.connect(busOneMeter);
@@ -40,19 +37,12 @@ function Bus1({
   }, [busOneMeter]);
 
   useEffect(() => {
-    if (!busOneActive) {
-      setMasterMeterVal(-112);
-      return cancelAnimationFrame(requestRef.current);
-    }
-    if (state === "started") {
-      requestAnimationFrame(animateMeter);
-    } else {
-      return () => {
-        cancelAnimationFrame(requestRef.current);
-      };
-    }
+    if (state !== "started")
+      setTimeout(() => cancelAnimationFrame(requestRef.current), 1000);
+    requestAnimationFrame(animateMeter);
+    return () => cancelAnimationFrame(requestRef.current);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state, busOneActive]);
+  }, [state]);
 
   return (
     <div>
@@ -78,20 +68,6 @@ function Bus1({
               className="effect-select"
             >
               <option value="fx1">FX1</option>
-              <option value="reverb">Reverb</option>
-              <option value="delay">Delay</option>
-              <option value="chours">Chorus</option>
-              <option value="phaser">Phaser</option>
-              <option value="pitch-shift">PitchShift</option>
-              <option value="distortion">Distortion</option>
-            </select>
-          </div>
-          <div style={{ display: "flex", flexDirection: "column" }}>
-            <select
-              onChange={(e) => handleSetBusOneFxTwoChoice(e.target.value)}
-              className="effect-select"
-            >
-              <option value="fx1">FX2</option>
               <option value="reverb">Reverb</option>
               <option value="delay">Delay</option>
               <option value="chours">Chorus</option>
