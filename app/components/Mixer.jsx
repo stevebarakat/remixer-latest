@@ -18,6 +18,7 @@ import {
 } from "tone";
 import Controls from "./Controls";
 import Delay from "./Delay";
+import Reverber from "./Reverb";
 import MasterVol from "./MasterVol";
 import Bus1 from "./Bus1";
 import Bus2 from "./Bus2";
@@ -43,8 +44,9 @@ function Mixer({ song }) {
   const handleSetState = (value) => setState(value);
   const [busOneActive, setBusOneActive] = useState(false);
   const [temp, setTemp] = useState([false, false, false, false]);
+  const [busOneFxOneControls, setBusOneFxOneControls] = useState(null);
 
-  t.set({ bpm: 92 });
+  // t.set({ bpm: 92 });
   // make sure song stops at end
   if (t.seconds > song.end) {
     t.position = song.end;
@@ -124,12 +126,11 @@ function Mixer({ song }) {
         setBusOneFxOneType(null);
         break;
       case "reverb":
-        setBusOneFxOneType(new Reverb({ decay: 3, wet: 1 }).toDestination());
+        setBusOneFxOneType(new Reverb({ wet: 1 }).toDestination());
         break;
       case "delay":
         setBusOneFxOneType(
           new FeedbackDelay({
-            delayTime: "1n",
             wet: 1,
           }).toDestination()
         );
@@ -198,6 +199,20 @@ function Mixer({ song }) {
       }
     }
   }
+
+  useEffect(() => {
+    switch (busOneFxOneChoice) {
+      case "delay":
+        setBusOneFxOneControls(<Delay controls={busOneFxOneType} />);
+        break;
+      case "reverb":
+        setBusOneFxOneControls(<Reverber controls={busOneFxOneType} />);
+        break;
+      default:
+        break;
+    }
+  }, [busOneFxOneChoice, busOneFxOneType]);
+
   // wait for the buffers to load
   return isLoaded === false ? (
     <div className="loader-wrap">
@@ -224,9 +239,7 @@ function Mixer({ song }) {
           <p>Location:{song.location}</p>
         </div>
       </div>
-      {busOneFxOneChoice === "delay" && (
-        <Delay controls={busOneFxOneChoice === "delay" && busOneFxOneType} />
-      )}
+      {busOneFxOneControls}
       <div className="mixer">
         {tracks.map((track, i) => {
           return (
