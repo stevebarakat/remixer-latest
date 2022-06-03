@@ -6,11 +6,11 @@ export default function Choruser({ controls }) {
         <input
           type="range"
           name="frequency"
-          min={0}
-          max={10}
-          step={0.01}
+          min={20}
+          max={20000}
+          step={10}
           onChange={(e) => {
-            controls.frequency = parseFloat(e.target.value);
+            controls.frequency.value = parseFloat(e.target.value);
           }}
         />
       </div>
@@ -45,11 +45,11 @@ export default function Choruser({ controls }) {
         <input
           type="range"
           name="feedback"
-          min={0.001}
-          max={10}
-          step={0.001}
+          min={0}
+          max={1}
+          step={0.00001}
           onChange={(e) => {
-            controls.feedback = parseFloat(e.target.value);
+            controls.feedback.value = parseFloat(e.target.value);
           }}
         />
       </div>
