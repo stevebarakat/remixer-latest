@@ -1,5 +1,4 @@
 function Delay({ controls }) {
-  // console.log("controls", controls);
   return (
     <div>
       <div style={{ display: "flex", flexDirection: "column" }}>
@@ -11,8 +10,6 @@ function Delay({ controls }) {
           max={1}
           step={0.0001}
           onChange={(e) => {
-            // console.log(e.target.value);
-            // console.log("controls.delayTime", controls.delayTime.value);
             controls.delayTime.value = parseFloat(e.target.value);
           }}
         />
@@ -26,8 +23,6 @@ function Delay({ controls }) {
           max={1}
           step={0.0001}
           onChange={(e) => {
-            // console.log(e.target.value);
-            // console.log("controls.delayTime", controls.delayTime.value);
             controls.feedback.value = parseFloat(e.target.value);
           }}
         />

@@ -1,5 +1,4 @@
 export default function Reverber({ controls }) {
-  // console.log("controls", controls);
   return (
     <div>
       <div style={{ display: "flex", flexDirection: "column" }}>

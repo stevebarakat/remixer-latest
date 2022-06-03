@@ -53,7 +53,7 @@ export default function Bus2({
               <option value="fx1">FX1</option>
               <option value="reverb">Reverb</option>
               <option value="delay">Delay</option>
-              <option value="chours">Chorus</option>
+              <option value="chorus">Chorus</option>
               <option value="phaser">Phaser</option>
               <option value="pitch-shift">PitchShift</option>
               <option value="distortion">Distortion</option>
@@ -67,7 +67,7 @@ export default function Bus2({
               <option value="fx1">FX2</option>
               <option value="reverb">Reverb</option>
               <option value="delay">Delay</option>
-              <option value="chours">Chorus</option>
+              <option value="chorus">Chorus</option>
               <option value="phaser">Phaser</option>
               <option value="pitch-shift">PitchShift</option>
               <option value="distortion">Distortion</option>

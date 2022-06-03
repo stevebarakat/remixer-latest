@@ -12,18 +12,20 @@ import {
   Chorus,
   Distortion,
   PitchShift,
-  Phaser,
+  Chebyshev,
   FeedbackDelay,
   Transport as t,
 } from "tone";
 import Controls from "./Controls";
-import Delay from "./Delay";
-import Reverber from "./Reverb";
+import Delay from "./FX/Delay";
+import Reverber from "./FX/Reverb";
+import Choruser from "./FX/Chorus";
 import MasterVol from "./MasterVol";
 import Bus1 from "./Bus1";
 import Bus2 from "./Bus2";
 import ChannelStrip from "./ChannelStrip";
 import Loader from "./Loader";
+import Chebyshever from "./FX/Chebyshev";
 
 function Mixer({ song }) {
   const tracks = song.tracks;
@@ -135,7 +137,7 @@ function Mixer({ song }) {
           }).toDestination()
         );
         break;
-      case "chours":
+      case "chorus":
         setBusOneFxOneType(
           new Chorus({
             frequency: 4,
@@ -145,13 +147,11 @@ function Mixer({ song }) {
           }).toDestination()
         );
         break;
-      case "phaser":
+      case "chebyshev":
         setBusOneFxOneType(
-          new Phaser({
+          new Chebyshev({
             wet: 1,
-            frequency: 15,
-            octaves: 5,
-            baseFrequency: 1000,
+            order: 1,
           }).toDestination()
         );
         break;
@@ -177,6 +177,25 @@ function Mixer({ song }) {
   }, [busOneFxOneChoice]);
 
   useEffect(() => {
+    switch (busOneFxOneChoice) {
+      case "delay":
+        setBusOneFxOneControls(<Delay controls={busOneFxOneType} />);
+        break;
+      case "reverb":
+        setBusOneFxOneControls(<Reverber controls={busOneFxOneType} />);
+        break;
+      case "chebyshev":
+        setBusOneFxOneControls(<Chebyshever controls={busOneFxOneType} />);
+        break;
+      case "chorus":
+        setBusOneFxOneControls(<Choruser controls={busOneFxOneType} />);
+        break;
+      default:
+        break;
+    }
+  }, [busOneFxOneChoice, busOneFxOneType]);
+
+  useEffect(() => {
     if (busOneFxOneChoice === "FX1") busOneFxOneType.disconnect();
     if (busOneFxOneType === null || busOneChannel.current === null) return;
     busOneChannel.current.connect(busOneFxOneType);
@@ -199,19 +218,6 @@ function Mixer({ song }) {
       }
     }
   }
-
-  useEffect(() => {
-    switch (busOneFxOneChoice) {
-      case "delay":
-        setBusOneFxOneControls(<Delay controls={busOneFxOneType} />);
-        break;
-      case "reverb":
-        setBusOneFxOneControls(<Reverber controls={busOneFxOneType} />);
-        break;
-      default:
-        break;
-    }
-  }, [busOneFxOneChoice, busOneFxOneType]);
 
   // wait for the buffers to load
   return isLoaded === false ? (

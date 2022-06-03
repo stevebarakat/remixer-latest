@@ -1,8 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import useKeyPress from "~/hooks/useKeyPress";
 import VuMeter from "./VuMeter";
-import { scale, dBToPercent } from "~/utils/scale";
-import { Meta } from "@remix-run/react";
+import { dBToPercent } from "~/utils/scale";
 
 function Bus1({
   state,
@@ -70,8 +69,8 @@ function Bus1({
               <option value="fx1">FX1</option>
               <option value="reverb">Reverb</option>
               <option value="delay">Delay</option>
-              <option value="chours">Chorus</option>
-              <option value="phaser">Phaser</option>
+              <option value="chorus">Chorus</option>
+              <option value="chebyshev">Chebyshev</option>
               <option value="pitch-shift">PitchShift</option>
               <option value="distortion">Distortion</option>
             </select>
