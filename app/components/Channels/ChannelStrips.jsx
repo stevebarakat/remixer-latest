@@ -8,6 +8,8 @@ import { scale } from "~/utils/scale";
 function ChannelStrip({
   index,
   track,
+  tracks,
+  handleSetTracks,
   channel,
   eq,
   meterVal,
@@ -84,6 +86,17 @@ function ChannelStrip({
       },
       { method: "post", action: "/actions", replace: true }
     );
+  }
+
+  // THIS IS WHERE BUS ONE IS SET
+  function changeBusOne(e) {
+    tracks.forEach((track, i) => {
+      const id = parseInt(e.target.id.toString()[0], 10);
+      if (i === id) {
+        tracks[i].busOne = e.target.checked;
+      }
+      handleSetTracks([...tracks]);
+    });
   }
 
   // THIS IS WHERE HIGH EQ IS SET
@@ -220,7 +233,9 @@ function ChannelStrip({
         <input
           id={`${index}busOne${track.path}`}
           type="checkbox"
-          onChange={toggleBusOne}
+          // onChange={toggleBusOne}
+          checked={track.busOne}
+          onChange={changeBusOne}
         />
         <label className="label" htmlFor={`${index}busOne${track.path}`}>
           Bus 1

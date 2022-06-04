@@ -32,4 +32,5 @@ model Track {
   path   String
   volume Int?  @default(0)
   pan    Int?  @default(0)
+  busOne Boolean? @default(false)
 }

@@ -27,7 +27,8 @@ import Loader from "./Loader";
 import Chebyshever from "./FX/Chebyshev";
 
 function Mixer({ song }) {
-  const tracks = song.tracks;
+  const [tracks, setTracks] = useState(song.tracks);
+  const handleSetTracks = (value) => setTracks(value);
   const requestRef = useRef();
   const channels = useRef([]);
   const players = useRef([]);
@@ -174,6 +175,8 @@ function Mixer({ song }) {
     }
   }, [busOneFxOneChoice]);
 
+  console.log("busOneActive", busOneActive);
+
   useEffect(() => {
     switch (busOneFxOneChoice) {
       case "delay":
@@ -203,22 +206,34 @@ function Mixer({ song }) {
     return () => busOneFxOneType.disconnect();
   }, [busOneFxOneType, busOneFxOneChoice]);
 
-  function toggleBusOne(e) {
-    const id = parseInt(e.target.id.toString()[0], 10);
-    for (let i = 0; i < tracks.length; i++) {
-      temp[id] = e.target.checked;
-      setTemp(temp);
-      setBusOneActive(temp.find((item) => item === true));
-      if (i === id) {
-        if (e.target.checked) {
-          busOneChannel.current = new Volume({ volume: -32 }).toDestination();
-          channels.current[i].connect(busOneChannel.current);
-        } else {
-          busOneChannel.current.disconnect();
-        }
+  // function toggleBusOne(e) {
+  //   for (let i = 0; i < tracks.length; i++) {
+  //     temp[id] = e.target.checked;
+  //     setTemp(temp);
+  //     setBusOneActive(temp.find((item) => item === true));
+  //     if (i === id) {
+  //       if (e.target.checked) {
+  //         busOneChannel.current = new Volume({ volume: -32 }).toDestination();
+  //         channels.current[i].connect(busOneChannel.current);
+  //       } else {
+  //         busOneChannel.current.disconnect();
+  //       }
+  //     }
+  //   }
+  // }
+
+  useEffect(() => {
+    tracks.forEach((track, i) => {
+      console.log(track.busOne);
+      if (track.busOne === true) {
+        setBusOneActive(true);
       }
-    }
-  }
+    });
+    busOneChannel.current = new Volume({ volume: -32 }).toDestination();
+    channels.current.forEach((channel) => {
+      channel.connect(busOneChannel.current);
+    });
+  }, [tracks]);
 
   // wait for the buffers to load
   return isLoaded === false ? (
@@ -257,8 +272,10 @@ function Mixer({ song }) {
               channel={channels.current[i]}
               eq={eqs.current[i]}
               track={track}
+              tracks={tracks}
+              handleSetTracks={handleSetTracks}
               state={state}
-              toggleBusOne={toggleBusOne}
+              // toggleBusOne={toggleBusOne}
             />
           );
         })}
