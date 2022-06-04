@@ -5,11 +5,11 @@ function FastFwd({ startTime, startPosition, endPosition, currentTime }) {
   function ff() {
     if (t.seconds > endPosition - 10) {
       t.seconds = endPosition;
-      startTime.current = startPosition;
+      t.position = endPosition;
     } else {
-      t.position = currentTime.current - startTime.current + 10;
-      startTime.current -= 10;
+      t.set({ seconds: t.seconds + 10 });
     }
+    console.log(t.seconds);
   }
 
   return (

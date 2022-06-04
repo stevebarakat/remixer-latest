@@ -17,8 +17,8 @@ function Controls({ song, state, handleSetState }) {
         <Rewind startTime={startTime} startPosition={song.start} />
         <Play song={song} state={state} handleSetState={handleSetState} />
         <FastFwd
-          startTime={startTime}
-          currentTime={currentTime}
+          startTime={startTime.current}
+          currentTime={currentTime.current}
           startPosition={song.start}
           endPosition={song.end}
           handleSetState={handleSetState}
