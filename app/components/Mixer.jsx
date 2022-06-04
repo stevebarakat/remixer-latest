@@ -206,22 +206,6 @@ function Mixer({ song }) {
     return () => busOneFxOneType.disconnect();
   }, [busOneFxOneType, busOneFxOneChoice]);
 
-  // function toggleBusOne(e) {
-  //   for (let i = 0; i < tracks.length; i++) {
-  //     temp[id] = e.target.checked;
-  //     setTemp(temp);
-  //     setBusOneActive(temp.find((item) => item === true));
-  //     if (i === id) {
-  //       if (e.target.checked) {
-  //         busOneChannel.current = new Volume({ volume: -32 }).toDestination();
-  //         channels.current[i].connect(busOneChannel.current);
-  //       } else {
-  //         busOneChannel.current.disconnect();
-  //       }
-  //     }
-  //   }
-  // }
-
   useEffect(() => {
     tracks.forEach((track, i) => {
       console.log(track.busOne);
@@ -229,11 +213,16 @@ function Mixer({ song }) {
         setBusOneActive(true);
       }
     });
+    for (let i = 0; i < tracks.length; i++) {
+      temp[i] = tracks[i].busOne;
+      setTemp(temp);
+      setBusOneActive(temp.find((item) => item === true));
+    }
     busOneChannel.current = new Volume({ volume: -32 }).toDestination();
     channels.current.forEach((channel) => {
       channel.connect(busOneChannel.current);
     });
-  }, [tracks]);
+  }, [tracks, temp]);
 
   // wait for the buffers to load
   return isLoaded === false ? (

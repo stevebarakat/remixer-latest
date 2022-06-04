@@ -58,7 +58,6 @@ function Bus1({
           <div style={{ display: "flex", flexDirection: "column" }}>
             <select
               onClick={(e) => {
-                e.preventDefault();
                 MetaPress
                   ? setBusOneFxOneOpen(true)
                   : setBusOneFxOneOpen(false);
