@@ -72,7 +72,7 @@ function Bus1({
               <option value="chorus">Chorus</option>
               <option value="chebyshev">Chebyshev</option>
               <option value="pitch-shift">PitchShift</option>
-              <option value="distortion">Distortion</option>
+              <option value="compressor">Compressor</option>
             </select>
           </div>
         </>

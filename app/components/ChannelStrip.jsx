@@ -16,7 +16,7 @@ function ChannelStrip({
 }) {
   const fetcher = useFetcher();
   const [isMuted, setIsMuted] = useState(track.mute);
-  const volume = useRef(track.volume);
+  const [volume, setVolume] = useState(track.volume);
   const preFader = meterVal;
   const postFader = meterVal + volume;
   const [isPostFader, setIsPostFader] = useState(true);
@@ -31,7 +31,7 @@ function ChannelStrip({
     const vol = Math.log(value + 101) / Math.log(113);
     const scaledVol = scale(vol, 0, 1, -100, 12);
 
-    volume.current = value;
+    setVolume(value);
     channel.set({ volume: scaledVol });
     fetcher.submit(
       {
@@ -262,7 +262,7 @@ function ChannelStrip({
             disabled
             type="text"
             className="level-val"
-            value={Math.round(volume.current) + " db"}
+            value={Math.round(volume) + " db"}
           />
         </div>
         <div className="levels-wrap">
@@ -280,7 +280,7 @@ function ChannelStrip({
             min={-100}
             max={12}
             step={0.01}
-            defaultValue={volume.current}
+            defaultValue={volume}
             onChange={changeVolume}
           />
         </div>

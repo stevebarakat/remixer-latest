@@ -56,7 +56,7 @@ export default function Bus2({
               <option value="chorus">Chorus</option>
               <option value="phaser">Phaser</option>
               <option value="pitch-shift">PitchShift</option>
-              <option value="distortion">Distortion</option>
+              <option value="compressor">Compressor</option>
             </select>
           </div>
           <div style={{ display: "flex", flexDirection: "column" }}>
@@ -70,7 +70,7 @@ export default function Bus2({
               <option value="chorus">Chorus</option>
               <option value="phaser">Phaser</option>
               <option value="pitch-shift">PitchShift</option>
-              <option value="distortion">Distortion</option>
+              <option value="compressor">Compressor</option>
             </select>
           </div>
         </>

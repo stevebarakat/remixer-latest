@@ -10,7 +10,7 @@ import {
   Volume,
   Add,
   Chorus,
-  Distortion,
+  Compressor,
   PitchShift,
   Chebyshev,
   FeedbackDelay,
@@ -19,8 +19,8 @@ import {
 import Controls from "./Controls";
 import Delay from "./FX/Delay";
 import Reverber from "./FX/Reverb";
-import PitchShifter from "./FX/PitchShift";
 import Choruser from "./FX/Chorus";
+import Compress from "./FX/Compressor";
 import MasterVol from "./MasterVol";
 import Bus1 from "./Bus1";
 import Bus2 from "./Bus2";
@@ -141,6 +141,9 @@ function Mixer({ song }) {
       case "chorus":
         setBusOneFxOneType(
           new Chorus({
+            frequency: 4,
+            delayTime: 2.5,
+            depth: 0.5,
             wet: 1,
           }).toDestination()
         );
@@ -156,13 +159,15 @@ function Mixer({ song }) {
       case "pitch-shift":
         setBusOneFxOneType(
           new PitchShift({
+            pitch: 24,
             wet: 1,
           }).toDestination()
         );
         break;
-      case "distortion":
+      case "compressor":
         setBusOneFxOneType(
-          new Distortion({
+          new Compressor({
+            compressor: 8,
             wet: 1,
           }).toDestination()
         );
@@ -186,8 +191,8 @@ function Mixer({ song }) {
       case "chorus":
         setBusOneFxOneControls(<Choruser controls={busOneFxOneType} />);
         break;
-      case "pitch-shift":
-        setBusOneFxOneControls(<PitchShifter controls={busOneFxOneType} />);
+      case "compressor":
+        setBusOneFxOneControls(<Compress controls={busOneFxOneType} />);
         break;
       default:
         break;
