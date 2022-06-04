@@ -3,7 +3,7 @@ import { useFetcher } from "@remix-run/react";
 import { Knob } from "react-rotary-knob";
 import skin from "~/utils/skin";
 import VuMeter from "./VuMeter";
-import { scale } from "../utils/scale";
+import { scale } from "~/utils/scale";
 
 function ChannelStrip({
   index,

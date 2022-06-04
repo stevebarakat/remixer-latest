@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { Form, useFetcher } from "@remix-run/react";
-// import supabase from "~/utils/supabase";
 import Mixer from "~/components/Mixer";
 
 export default function Index() {
@@ -19,16 +18,6 @@ export default function Index() {
     fetcher.load(`/songs/${selectedSongId}`);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedSongId]);
-
-  // useEffect(() => {
-  //   supabase
-  //     .from(`tracks:song_id=eq.${selectedSongId}`)
-  //     .on("*", (payload) => {
-  //       console.log("payload", payload.new.volume);
-  //       setVolume(payload.new.volume);
-  //     })
-  //     .subscribe();
-  // }, [selectedSongId]);
 
   function changeSong(e) {
     switch (e.target.value) {

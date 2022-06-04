@@ -20,9 +20,9 @@ import Delay from "./FX/Delay";
 import Reverber from "./FX/Reverb";
 import Choruser from "./FX/Chorus";
 import Compress from "./FX/Compressor";
-import MasterVol from "./MasterVol";
-import Bus1 from "./Bus1";
-import ChannelStrip from "./ChannelStrip";
+import MasterVol from "./Channels/MasterVol";
+import Bus1 from "./Channels/Bus1";
+import ChannelStrip from "./Channels/ChannelStrips";
 import Loader from "./Loader";
 import Chebyshever from "./FX/Chebyshev";
 
