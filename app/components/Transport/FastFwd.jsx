@@ -1,15 +1,13 @@
 import { FaForward } from "react-icons/fa";
 import { Transport as t } from "tone";
 
-function FastFwd({ startTime, startPosition, endPosition, currentTime }) {
+function FastFwd({ song }) {
   function ff() {
-    if (t.seconds > endPosition - 10) {
-      t.seconds = endPosition;
-      t.position = endPosition;
+    if (t.seconds > song.end - 10) {
+      t.seconds = song.end;
     } else {
       t.set({ seconds: t.seconds + 10 });
     }
-    console.log(t.seconds);
   }
 
   return (

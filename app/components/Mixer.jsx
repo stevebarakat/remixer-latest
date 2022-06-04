@@ -6,7 +6,6 @@ import {
   Channel,
   Meter,
   Reverb,
-  Gain,
   Volume,
   Add,
   Chorus,
@@ -16,14 +15,13 @@ import {
   FeedbackDelay,
   Transport as t,
 } from "tone";
-import Controls from "./Controls";
+import Controls from "./Transport/Controls";
 import Delay from "./FX/Delay";
 import Reverber from "./FX/Reverb";
 import Choruser from "./FX/Chorus";
 import Compress from "./FX/Compressor";
 import MasterVol from "./MasterVol";
 import Bus1 from "./Bus1";
-import Bus2 from "./Bus2";
 import ChannelStrip from "./ChannelStrip";
 import Loader from "./Loader";
 import Chebyshever from "./FX/Chebyshev";
@@ -52,13 +50,12 @@ function Mixer({ song }) {
   // t.set({ bpm: 92 });
   // make sure song stops at end
   if (t.seconds > song.end) {
-    t.position = song.end;
+    t.seconds = song.end;
     t.stop();
     setState("stopped");
   }
   // make sure song doesn't rewind past start position
   if (t.seconds < 0) {
-    t.position = song.start;
     t.seconds = song.start;
   }
   useEffect(() => {

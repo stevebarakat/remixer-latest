@@ -1,13 +1,12 @@
 import { FaBackward } from "react-icons/fa";
 import { Transport as t } from "tone";
 
-function Rewind({ startTime, startPosition }) {
+function Rewind({ song }) {
   function rew() {
-    if (parseInt(t.position, 10) < 10) {
-      t.position = startPosition;
+    if (t.seconds < song.start) {
+      t.seconds = song.start;
     } else {
-      t.position = startPosition - startTime.current - 10;
-      startTime.current += 10;
+      t.set({ seconds: t.seconds - 10 });
     }
   }
 
