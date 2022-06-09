@@ -88,17 +88,6 @@ function ChannelStrip({
     );
   }
 
-  // THIS IS WHERE BUS ONE IS SET
-  function changeBusOne(e) {
-    tracks.forEach((track, i) => {
-      const id = parseInt(e.target.id.toString()[0], 10);
-      if (i === id) {
-        tracks[i].busOne = e.target.checked;
-      }
-      handleSetTracks([...tracks]);
-    });
-  }
-
   // THIS IS WHERE HIGH EQ IS SET
   function changeHighEqLevel(val) {
     eq.high.value = val;

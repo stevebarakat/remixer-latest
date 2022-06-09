@@ -181,69 +181,52 @@ function Mixer({ song }) {
 
   console.log("busOneActive", busOneActive);
 
-  // useEffect(() => {
-  //   switch (busOneFxOneChoice) {
-  //     case "delay":
-  //       setBusOneFxOneControls(<Delay controls={busOneFxOneType} />);
-  //       break;
-  //     case "reverb":
-  //       setBusOneFxOneControls(<Reverber controls={busOneFxOneType} />);
-  //       break;
-  //     case "chebyshev":
-  //       setBusOneFxOneControls(<Chebyshever controls={busOneFxOneType} />);
-  //       break;
-  //     case "chorus":
-  //       setBusOneFxOneControls(<Choruser controls={busOneFxOneType} />);
-  //       break;
-  //     case "compressor":
-  //       setBusOneFxOneControls(<Compress controls={busOneFxOneType} />);
-  //       break;
-  //     default:
-  //       break;
-  //   }
-  // }, [busOneFxOneChoice, busOneFxOneType]);
+  useEffect(() => {
+    switch (busOneFxOneChoice) {
+      case "delay":
+        setBusOneFxOneControls(<Delay controls={busOneFxOneType} />);
+        break;
+      case "reverb":
+        setBusOneFxOneControls(<Reverber controls={busOneFxOneType} />);
+        break;
+      case "chebyshev":
+        setBusOneFxOneControls(<Chebyshever controls={busOneFxOneType} />);
+        break;
+      case "chorus":
+        setBusOneFxOneControls(<Choruser controls={busOneFxOneType} />);
+        break;
+      case "compressor":
+        setBusOneFxOneControls(<Compress controls={busOneFxOneType} />);
+        break;
+      default:
+        break;
+    }
+  }, [busOneFxOneChoice, busOneFxOneType]);
 
-  // useEffect(() => {
-  //   if (busOneFxOneChoice === "FX1") busOneFxOneType.disconnect();
-  //   if (busOneFxOneType === null || busOneChannel.current === null) return;
-  //   busOneChannel.current.connect(busOneFxOneType);
-  //   return () => busOneFxOneType.disconnect();
-  // }, [busOneFxOneType, busOneFxOneChoice]);
-
-  // useEffect(() => {
-  //   tracks.forEach((track, i) => {
-  //     console.log(track.busOne);
-  //     if (track.busOne === true) {
-  //       setBusOneActive(true);
-  //     }
-  //   });
-  //   for (let i = 0; i < tracks.length; i++) {
-  //     temp[i] = tracks[i].busOne;
-  //     setTemp(temp);
-  //     setBusOneActive(temp.find((item) => item === true));
-  //   }
-  //   busOneChannel.current = new Volume({ volume: -32 }).toDestination();
-  //   channels.current.forEach((channel) => {
-  //     channel.connect(busOneChannel.current);
-  //   });
-  // }, [tracks, temp]);
+  useEffect(() => {
+    if (busOneFxOneChoice === "FX1") busOneFxOneType.disconnect();
+    if (busOneFxOneType === null || busOneChannel.current === null) return;
+    busOneChannel.current.connect(busOneFxOneType);
+    return () => busOneFxOneType.disconnect();
+  }, [busOneFxOneType, busOneFxOneChoice]);
 
   function toggleBusOne(e) {
-    console.log(e.target.checked);
     const id = parseInt(e.target.id[0], 10);
-    console.log(id);
     channels.current.forEach((channel, i) => {
       if (id === i) {
         if (e.target.checked) {
+          setBusOneActive(true);
           channels.current[id].disconnect(Destination);
           channels.current[id].connect(busOneChannel.current);
         } else {
+          setBusOneActive(false);
           channels.current[id].disconnect(busOneChannel.current);
           channels.current[id].connect(Destination);
         }
       }
     });
   }
+  console.log("busOneActive", busOneActive);
 
   // wait for the buffers to load
   return isLoaded === false ? (
