@@ -38,7 +38,6 @@ function Mixer({ song }) {
   const masterMeter = useRef(null);
   const busOneMeter = useRef(null);
   const busOneChannel = useRef(null);
-  // const masterBusChannel = useRef(null);
   const [meterVals, setMeterVals] = useState([]);
   const [isLoaded, setIsLoaded] = useState(false);
   const [busOneFxOneType, setBusOneFxOneType] = useState(null);
@@ -46,11 +45,14 @@ function Mixer({ song }) {
   const handleSetBusOneFxOneChoice = (value) => setBusOneFxOneChoice(value);
   const [state, setState] = useState("stopped");
   const handleSetState = (value) => setState(value);
-  const [busOneActive, setBusOneActive] = useState(false);
-  const [temp, setTemp] = useState([false, false, false, false]);
+  const [busOneActive, setBusOneActive] = useState([
+    false,
+    false,
+    false,
+    false,
+  ]);
   const [busOneFxOneControls, setBusOneFxOneControls] = useState(null);
 
-  // t.set({ bpm: 92 });
   // make sure song stops at end
   if (t.seconds > song.end) {
     t.seconds = song.end;
@@ -117,8 +119,6 @@ function Mixer({ song }) {
 
   // triggers animateMeter
   useEffect(() => {
-    if (state !== "started")
-      setTimeout(() => cancelAnimationFrame(requestRef.current), 1000);
     requestAnimationFrame(animateMeter);
     return () => cancelAnimationFrame(requestRef.current);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -215,11 +215,13 @@ function Mixer({ song }) {
     channels.current.forEach((channel, i) => {
       if (id === i) {
         if (e.target.checked) {
-          setBusOneActive(true);
+          busOneActive[id] = true;
+          setBusOneActive(busOneActive);
           channels.current[id].disconnect(Destination);
           channels.current[id].connect(busOneChannel.current);
         } else {
-          setBusOneActive(false);
+          busOneActive[id] = false;
+          setBusOneActive(busOneActive);
           channels.current[id].disconnect(busOneChannel.current);
           channels.current[id].connect(Destination);
         }

@@ -14,6 +14,7 @@ function Bus1({
   const [masterMeterVal, setMasterMeterVal] = useState(-12);
   const [masterVol, setMasterVol] = useState(0);
   const [busOneFxOneOpen, setBusOneFxOneOpen] = useState(false);
+  const busOneActiveBool = busOneActive.some((bus) => bus === true);
 
   if (busOneChannel !== null) {
     busOneChannel.connect(busOneMeter);
@@ -22,7 +23,7 @@ function Bus1({
   const MetaPress = useKeyPress("Meta");
 
   function changeMasterVolume(e) {
-    if (!busOneActive) return;
+    if (!busOneActiveBool) return;
     const value = parseInt(e.target.value, 10);
     const v = Math.log(value + 101) / Math.log(113);
     const sv = dBToPercent(v);
@@ -53,7 +54,7 @@ function Bus1({
           </div>
         </div>
       </dialog>
-      {busOneActive === true ? (
+      {busOneActiveBool === true ? (
         <>
           <div style={{ display: "flex", flexDirection: "column" }}>
             <select
