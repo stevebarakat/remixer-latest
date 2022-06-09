@@ -1,77 +1,47 @@
 import { redirect } from "@remix-run/node";
-import supabase from "~/utils/supabase";
 
 export const action = async ({ request }) => {
   const form = await request.formData();
   const actionName = form.get("actionName");
   const track = form.get("track");
   const parsedTrack = JSON.parse(track);
-
-  console.log(actionName);
+  console.log("parsedTrack", parsedTrack);
+  console.log("actionName", actionName);
 
   switch (actionName) {
     case "changeVolume":
       const volume = form.get("volume");
-      await supabase.from("tracks").upsert({
-        id: parsedTrack.id,
-        ...parsedTrack,
-        volume,
-      });
+      console.log("volume: ", volume);
       break;
 
     case "changePan":
       const pan = form.get("pan");
-      console.log("PAN: ", pan);
-      await supabase.from("tracks").upsert({
-        id: parsedTrack.id,
-        ...parsedTrack,
-        pan,
-      });
+      console.log("pan: ", pan);
       break;
 
     case "changeMute":
       const mute = form.get("mute");
-      await supabase.from("tracks").upsert({
-        id: parsedTrack.id,
-        ...parsedTrack,
-        mute,
-      });
+      console.log("mute: ", mute);
       break;
 
     case "changeSolo":
       const solo = form.get("solo");
-      await supabase.from("tracks").upsert({
-        id: parsedTrack.id,
-        ...parsedTrack,
-        solo,
-      });
+      console.log("solo", solo);
       break;
 
     case "changeHighEqLevel":
       const highEqLevel = form.get("highEqLevel");
-      await supabase.from("tracks").upsert({
-        id: parsedTrack.id,
-        ...parsedTrack,
-        highEqLevel: parseFloat(highEqLevel),
-      });
+      console.log("highEqLevel: ", highEqLevel);
       break;
 
     case "changeMidEqLevel":
       const midEqLevel = form.get("midEqLevel");
-      await supabase.from("tracks").upsert({
-        id: parsedTrack.id,
-        ...parsedTrack,
-        midEqLevel: parseFloat(midEqLevel),
-      });
+      console.log("midEqLevel", midEqLevel);
       break;
 
     case "changeLowEqLevel":
       const lowEqLevel = form.get("lowEqLevel");
-      await supabase.from("tracks").upsert({
-        id: parsedTrack.id,
-        ...parsedTrack,
-        lowEqLevel: parseFloat(lowEqLevel),
-      });
+      console.log("lowEqLevel", lowEqLevel);
       break;
 
     default:

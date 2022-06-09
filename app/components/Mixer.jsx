@@ -179,8 +179,6 @@ function Mixer({ song }) {
     }
   }, [busOneFxOneChoice]);
 
-  console.log("busOneActive", busOneActive);
-
   useEffect(() => {
     switch (busOneFxOneChoice) {
       case "delay":
@@ -228,7 +226,6 @@ function Mixer({ song }) {
       }
     });
   }
-  console.log("busOneActive", busOneActive);
 
   // wait for the buffers to load
   return isLoaded === false ? (

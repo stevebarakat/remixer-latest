@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { useFetcher } from "@remix-run/react";
 import { Knob } from "react-rotary-knob";
 import skin from "~/utils/skin";
