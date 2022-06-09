@@ -14,6 +14,7 @@ import {
   Chebyshev,
   FeedbackDelay,
   Transport as t,
+  Destination,
 } from "tone";
 import Controls from "./Transport/Controls";
 import Delay from "./FX/Delay";
@@ -37,6 +38,7 @@ function Mixer({ song }) {
   const masterMeter = useRef(null);
   const busOneMeter = useRef(null);
   const busOneChannel = useRef(null);
+  // const masterBusChannel = useRef(null);
   const [meterVals, setMeterVals] = useState([]);
   const [isLoaded, setIsLoaded] = useState(false);
   const [busOneFxOneType, setBusOneFxOneType] = useState(null);
@@ -64,9 +66,11 @@ function Mixer({ song }) {
     masterMeter.current = new Meter();
     busOneMeter.current = new Meter();
 
+    busOneChannel.current = new Channel().toDestination();
+
     for (let i = 0; i < tracks.length; i++) {
       channels.current.push(
-        new Channel(tracks[i].volume, tracks[i].pan).toDestination()
+        new Channel(tracks[i].volume, tracks[i].pan).connect(Destination)
       );
       players.current.push(new Player(tracks[i].path));
       eqs.current.push(new EQ3());
@@ -177,52 +181,69 @@ function Mixer({ song }) {
 
   console.log("busOneActive", busOneActive);
 
-  useEffect(() => {
-    switch (busOneFxOneChoice) {
-      case "delay":
-        setBusOneFxOneControls(<Delay controls={busOneFxOneType} />);
-        break;
-      case "reverb":
-        setBusOneFxOneControls(<Reverber controls={busOneFxOneType} />);
-        break;
-      case "chebyshev":
-        setBusOneFxOneControls(<Chebyshever controls={busOneFxOneType} />);
-        break;
-      case "chorus":
-        setBusOneFxOneControls(<Choruser controls={busOneFxOneType} />);
-        break;
-      case "compressor":
-        setBusOneFxOneControls(<Compress controls={busOneFxOneType} />);
-        break;
-      default:
-        break;
-    }
-  }, [busOneFxOneChoice, busOneFxOneType]);
+  // useEffect(() => {
+  //   switch (busOneFxOneChoice) {
+  //     case "delay":
+  //       setBusOneFxOneControls(<Delay controls={busOneFxOneType} />);
+  //       break;
+  //     case "reverb":
+  //       setBusOneFxOneControls(<Reverber controls={busOneFxOneType} />);
+  //       break;
+  //     case "chebyshev":
+  //       setBusOneFxOneControls(<Chebyshever controls={busOneFxOneType} />);
+  //       break;
+  //     case "chorus":
+  //       setBusOneFxOneControls(<Choruser controls={busOneFxOneType} />);
+  //       break;
+  //     case "compressor":
+  //       setBusOneFxOneControls(<Compress controls={busOneFxOneType} />);
+  //       break;
+  //     default:
+  //       break;
+  //   }
+  // }, [busOneFxOneChoice, busOneFxOneType]);
 
-  useEffect(() => {
-    if (busOneFxOneChoice === "FX1") busOneFxOneType.disconnect();
-    if (busOneFxOneType === null || busOneChannel.current === null) return;
-    busOneChannel.current.connect(busOneFxOneType);
-    return () => busOneFxOneType.disconnect();
-  }, [busOneFxOneType, busOneFxOneChoice]);
+  // useEffect(() => {
+  //   if (busOneFxOneChoice === "FX1") busOneFxOneType.disconnect();
+  //   if (busOneFxOneType === null || busOneChannel.current === null) return;
+  //   busOneChannel.current.connect(busOneFxOneType);
+  //   return () => busOneFxOneType.disconnect();
+  // }, [busOneFxOneType, busOneFxOneChoice]);
 
-  useEffect(() => {
-    tracks.forEach((track, i) => {
-      console.log(track.busOne);
-      if (track.busOne === true) {
-        setBusOneActive(true);
+  // useEffect(() => {
+  //   tracks.forEach((track, i) => {
+  //     console.log(track.busOne);
+  //     if (track.busOne === true) {
+  //       setBusOneActive(true);
+  //     }
+  //   });
+  //   for (let i = 0; i < tracks.length; i++) {
+  //     temp[i] = tracks[i].busOne;
+  //     setTemp(temp);
+  //     setBusOneActive(temp.find((item) => item === true));
+  //   }
+  //   busOneChannel.current = new Volume({ volume: -32 }).toDestination();
+  //   channels.current.forEach((channel) => {
+  //     channel.connect(busOneChannel.current);
+  //   });
+  // }, [tracks, temp]);
+
+  function toggleBusOne(e) {
+    console.log(e.target.checked);
+    const id = parseInt(e.target.id[0], 10);
+    console.log(id);
+    channels.current.forEach((channel, i) => {
+      if (id === i) {
+        if (e.target.checked) {
+          channels.current[id].disconnect(Destination);
+          channels.current[id].connect(busOneChannel.current);
+        } else {
+          channels.current[id].disconnect(busOneChannel.current);
+          channels.current[id].connect(Destination);
+        }
       }
     });
-    for (let i = 0; i < tracks.length; i++) {
-      temp[i] = tracks[i].busOne;
-      setTemp(temp);
-      setBusOneActive(temp.find((item) => item === true));
-    }
-    busOneChannel.current = new Volume({ volume: -32 }).toDestination();
-    channels.current.forEach((channel) => {
-      channel.connect(busOneChannel.current);
-    });
-  }, [tracks, temp]);
+  }
 
   // wait for the buffers to load
   return isLoaded === false ? (
@@ -264,7 +285,7 @@ function Mixer({ song }) {
               tracks={tracks}
               handleSetTracks={handleSetTracks}
               state={state}
-              // toggleBusOne={toggleBusOne}
+              toggleBusOne={toggleBusOne}
             />
           );
         })}
@@ -275,7 +296,11 @@ function Mixer({ song }) {
           handleSetBusOneFxOneChoice={handleSetBusOneFxOneChoice}
           busOneMeter={busOneMeter.current}
         />
-        <MasterVol state={state} masterMeter={masterMeter.current} />
+        <MasterVol
+          state={state}
+          masterMeter={masterMeter.current}
+          // masterBusChannel={masterBusChannel.current}
+        />
       </div>
       <div className="controls-wrap">
         <div className="controls-well">

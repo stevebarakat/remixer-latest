@@ -234,8 +234,8 @@ function ChannelStrip({
           id={`${index}busOne${track.path}`}
           type="checkbox"
           // onChange={toggleBusOne}
-          checked={track.busOne}
-          onChange={changeBusOne}
+          // checked={track.busOne}
+          onChange={toggleBusOne}
         />
         <label className="label" htmlFor={`${index}busOne${track.path}`}>
           Bus 1

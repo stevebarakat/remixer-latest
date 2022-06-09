@@ -3,7 +3,7 @@ import { Destination } from "tone";
 import VuMeter from "./VuMeter";
 import { dBToPercent } from "~/utils/scale";
 
-function MasterVol({ state, masterMeter }) {
+function MasterVol({ state, masterMeter, masterBusChannel }) {
   const requestRef = useRef();
   const [masterMeterVal, setMasterMeterVal] = useState(-12);
   const [masterVol, setMasterVol] = useState(0);
