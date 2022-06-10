@@ -7,6 +7,7 @@ function Bus1({
   state,
   busOneChannel,
   handleSetBusOneFxOneChoice,
+  handleSetBusOneFxTwoChoice,
   busOneActive,
   busOneMeter,
 }) {
@@ -14,6 +15,7 @@ function Bus1({
   const [masterMeterVal, setMasterMeterVal] = useState(-12);
   const [masterVol, setMasterVol] = useState(0);
   const [busOneFxOneOpen, setBusOneFxOneOpen] = useState(false);
+  const [busOneFxTwoOpen, setBusOneFxTwoOpen] = useState(false);
   const busOneActiveBool = busOneActive.some((bus) => bus === true);
 
   if (busOneChannel !== null) {
@@ -54,6 +56,14 @@ function Bus1({
           </div>
         </div>
       </dialog>
+      <dialog open={busOneFxTwoOpen}>
+        <div>
+          <button onClick={() => setBusOneFxOneOpen(false)}>X</button>
+          <div>
+            <input type="range" />
+          </div>
+        </div>
+      </dialog>
       {busOneActiveBool === true ? (
         <>
           <div style={{ display: "flex", flexDirection: "column" }}>
@@ -67,6 +77,25 @@ function Bus1({
               className="effect-select"
             >
               <option value="fx1">FX1</option>
+              <option value="reverb">Reverb</option>
+              <option value="delay">Delay</option>
+              <option value="chorus">Chorus</option>
+              <option value="chebyshev">Chebyshev</option>
+              <option value="pitch-shift">PitchShift</option>
+              <option value="compressor">Compressor</option>
+            </select>
+          </div>
+          <div style={{ display: "flex", flexDirection: "column" }}>
+            <select
+              onClick={(e) => {
+                MetaPress
+                  ? setBusOneFxTwoOpen(true)
+                  : setBusOneFxTwoOpen(false);
+              }}
+              onChange={(e) => handleSetBusOneFxTwoChoice(e.target.value)}
+              className="effect-select"
+            >
+              <option value="fx1">FX2</option>
               <option value="reverb">Reverb</option>
               <option value="delay">Delay</option>
               <option value="chorus">Chorus</option>

@@ -6,8 +6,6 @@ import {
   Channel,
   Meter,
   Reverb,
-  Volume,
-  Add,
   Chorus,
   Compressor,
   PitchShift,
@@ -43,6 +41,9 @@ function Mixer({ song }) {
   const [busOneFxOneType, setBusOneFxOneType] = useState(null);
   const [busOneFxOneChoice, setBusOneFxOneChoice] = useState(null);
   const handleSetBusOneFxOneChoice = (value) => setBusOneFxOneChoice(value);
+  const [busOneFxTwoType, setBusOneFxTwoType] = useState(null);
+  const [busOneFxTwoChoice, setBusOneFxTwoChoice] = useState(null);
+  const handleSetBusOneFxTwoChoice = (value) => setBusOneFxTwoChoice(value);
   const [state, setState] = useState("stopped");
   const handleSetState = (value) => setState(value);
   const [busOneActive, setBusOneActive] = useState([
@@ -52,6 +53,7 @@ function Mixer({ song }) {
     false,
   ]);
   const [busOneFxOneControls, setBusOneFxOneControls] = useState(null);
+  const [busOneFxTwoControls, setBusOneFxTwoControls] = useState(null);
 
   // make sure song stops at end
   if (t.seconds > song.end) {
@@ -208,6 +210,90 @@ function Mixer({ song }) {
     return () => busOneFxOneType.disconnect();
   }, [busOneFxOneType, busOneFxOneChoice]);
 
+  // when busOneFxTwoChoice is selected it initiates new FX
+  useEffect(() => {
+    switch (busOneFxTwoChoice) {
+      case "FX1":
+        setBusOneFxTwoType(null);
+        break;
+      case "reverb":
+        setBusOneFxTwoType(new Reverb({ wet: 1 }).toDestination());
+        break;
+      case "delay":
+        setBusOneFxTwoType(
+          new FeedbackDelay({
+            wet: 1,
+          }).toDestination()
+        );
+        break;
+      case "chorus":
+        setBusOneFxTwoType(
+          new Chorus({
+            frequency: 4,
+            delayTime: 2.5,
+            depth: 0.5,
+            wet: 1,
+          }).toDestination()
+        );
+        break;
+      case "chebyshev":
+        setBusOneFxTwoType(
+          new Chebyshev({
+            wet: 1,
+            order: 1,
+          }).toDestination()
+        );
+        break;
+      case "pitch-shift":
+        setBusOneFxTwoType(
+          new PitchShift({
+            pitch: 24,
+            wet: 1,
+          }).toDestination()
+        );
+        break;
+      case "compressor":
+        setBusOneFxTwoType(
+          new Compressor({
+            compressor: 8,
+            wet: 1,
+          }).toDestination()
+        );
+        break;
+      default:
+        break;
+    }
+  }, [busOneFxTwoChoice]);
+
+  useEffect(() => {
+    switch (busOneFxTwoChoice) {
+      case "delay":
+        setBusOneFxTwoControls(<Delay controls={busOneFxTwoType} />);
+        break;
+      case "reverb":
+        setBusOneFxTwoControls(<Reverber controls={busOneFxTwoType} />);
+        break;
+      case "chebyshev":
+        setBusOneFxTwoControls(<Chebyshever controls={busOneFxTwoType} />);
+        break;
+      case "chorus":
+        setBusOneFxTwoControls(<Choruser controls={busOneFxTwoType} />);
+        break;
+      case "compressor":
+        setBusOneFxTwoControls(<Compress controls={busOneFxTwoType} />);
+        break;
+      default:
+        break;
+    }
+  }, [busOneFxTwoChoice, busOneFxTwoType]);
+
+  useEffect(() => {
+    if (busOneFxTwoChoice === "FX1") busOneFxTwoType.disconnect();
+    if (busOneFxTwoType === null || busOneChannel.current === null) return;
+    busOneChannel.current.connect(busOneFxTwoType);
+    return () => busOneFxTwoType.disconnect();
+  }, [busOneFxTwoType, busOneFxTwoChoice]);
+
   function toggleBusOne(e) {
     const id = parseInt(e.target.id[0], 10);
     channels.current.forEach((channel, i) => {
@@ -254,6 +340,7 @@ function Mixer({ song }) {
         </div>
       </div>
       {busOneFxOneControls}
+      {busOneFxTwoControls}
       <div className="mixer">
         {tracks.map((track, i) => {
           return (
@@ -276,6 +363,7 @@ function Mixer({ song }) {
           busOneActive={busOneActive}
           busOneChannel={busOneChannel.current}
           handleSetBusOneFxOneChoice={handleSetBusOneFxOneChoice}
+          handleSetBusOneFxTwoChoice={handleSetBusOneFxTwoChoice}
           busOneMeter={busOneMeter.current}
         />
         <MasterVol
