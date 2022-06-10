@@ -3,9 +3,13 @@ import { Form, useFetcher } from "@remix-run/react";
 import Mixer from "~/components/Mixer";
 
 export default function Index() {
+  const [isLoaded, setIsLoaded] = useState(false);
+  const handleSetIsLoaded = (value) => setIsLoaded(value);
   const fetcher = useFetcher();
   const songQuery = fetcher.data;
-  const [selectedSongId, setSelectedSongId] = useState("roxanne");
+  const [selectedSongId, setSelectedSongId] = useState("borderline");
+
+  songQuery !== undefined && console.log("songQuery", songQuery.song);
 
   // load server data via resource route based on selected song id
   useEffect(() => {
@@ -20,6 +24,7 @@ export default function Index() {
   }, [selectedSongId]);
 
   function changeSong(e) {
+    setIsLoaded(false);
     switch (e.target.value) {
       case "a-day-in-the-life":
         setSelectedSongId("a-day-in-the-life");
@@ -29,13 +34,27 @@ export default function Index() {
         setSelectedSongId("roxanne");
         break;
 
+      case "borderline":
+        setSelectedSongId("borderline");
+        break;
+
+      case "blue-monday":
+        setSelectedSongId("blue-monday");
+        break;
+
       default:
         break;
     }
   }
   return (
     <div>
-      {songQuery !== undefined && <Mixer song={songQuery.song} />}
+      {songQuery !== undefined && (
+        <Mixer
+          song={songQuery.song}
+          isLoaded={isLoaded}
+          handleSetIsLoaded={handleSetIsLoaded}
+        />
+      )}
       <Form method="post" style={{ display: "flex", justifyContent: "center" }}>
         <select
           onChange={changeSong}
@@ -47,7 +66,9 @@ export default function Index() {
           <option value="a-day-in-the-life">
             The Beatles - A Day In The Life
           </option>
+          <option value="borderline">Madonna - Borderline</option>
           <option value="roxanne">The Police - Roxanne</option>
+          <option value="blue-monday">New Order - Blue Monday</option>
         </select>
       </Form>
     </div>

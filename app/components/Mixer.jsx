@@ -13,11 +13,13 @@ import {
   FeedbackDelay,
   Transport as t,
   Destination,
+  Volume,
 } from "tone";
 import Controls from "./Transport/Controls";
 import Delay from "./FX/Delay";
 import Reverber from "./FX/Reverb";
 import Choruser from "./FX/Chorus";
+import PitchShifter from "./FX/PitchShift";
 import Compress from "./FX/Compressor";
 import MasterVol from "./Channels/MasterVol";
 import Bus1 from "./Channels/Bus1";
@@ -26,11 +28,11 @@ import Loader from "./Loader";
 import Chebyshever from "./FX/Chebyshev";
 
 function Mixer({ song }) {
-  const [tracks, setTracks] = useState(song.tracks);
-  const handleSetTracks = (value) => setTracks(value);
+  const tracks = song.tracks;
   const requestRef = useRef();
   const channels = useRef([]);
   const players = useRef([]);
+  const choices = useRef([]);
   const eqs = useRef([]);
   const meters = useRef([]);
   const masterMeter = useRef(null);
@@ -70,7 +72,7 @@ function Mixer({ song }) {
     masterMeter.current = new Meter();
     busOneMeter.current = new Meter();
 
-    busOneChannel.current = new Channel().toDestination();
+    busOneChannel.current = new Volume().toDestination();
 
     for (let i = 0; i < tracks.length; i++) {
       channels.current.push(
@@ -127,168 +129,155 @@ function Mixer({ song }) {
   }, [state]);
 
   // when busOneFxOneChoice is selected it initiates new FX
+  choices.current = [busOneFxOneChoice, busOneFxTwoChoice];
   useEffect(() => {
-    switch (busOneFxOneChoice) {
-      case "FX1":
-        setBusOneFxOneType(null);
-        break;
-      case "reverb":
-        setBusOneFxOneType(new Reverb({ wet: 1 }).toDestination());
-        break;
-      case "delay":
-        setBusOneFxOneType(
-          new FeedbackDelay({
-            wet: 1,
-          }).toDestination()
-        );
-        break;
-      case "chorus":
-        setBusOneFxOneType(
-          new Chorus({
-            frequency: 4,
-            delayTime: 2.5,
-            depth: 0.5,
-            wet: 1,
-          }).toDestination()
-        );
-        break;
-      case "chebyshev":
-        setBusOneFxOneType(
-          new Chebyshev({
-            wet: 1,
-            order: 1,
-          }).toDestination()
-        );
-        break;
-      case "pitch-shift":
-        setBusOneFxOneType(
-          new PitchShift({
-            pitch: 24,
-            wet: 1,
-          }).toDestination()
-        );
-        break;
-      case "compressor":
-        setBusOneFxOneType(
-          new Compressor({
-            compressor: 8,
-            wet: 1,
-          }).toDestination()
-        );
-        break;
-      default:
-        break;
-    }
-  }, [busOneFxOneChoice]);
+    choices.current.forEach((choice, index) => {
+      const i = index + 1;
+      switch (choice) {
+        case "fx1":
+        case "fx2":
+          break;
+        case "reverb":
+          i === 1 && setBusOneFxOneType(new Reverb({ wet: 1 }).toDestination());
+          i === 2 && setBusOneFxTwoType(new Reverb({ wet: 1 }).toDestination());
+          break;
+        case "delay":
+          i === 1 &&
+            setBusOneFxOneType(
+              new FeedbackDelay({
+                wet: 1,
+              }).toDestination()
+            );
+          i === 2 &&
+            setBusOneFxTwoType(
+              new FeedbackDelay({
+                wet: 1,
+              }).toDestination()
+            );
+          break;
+        case "chorus":
+          i === 1 &&
+            setBusOneFxOneType(
+              new Chorus({
+                wet: 1,
+              }).toDestination()
+            );
+          i === 2 &&
+            setBusOneFxTwoType(
+              new Chorus({
+                wet: 1,
+              }).toDestination()
+            );
+          break;
+        case "chebyshev":
+          i === 1 &&
+            setBusOneFxOneType(
+              new Chebyshev({
+                wet: 1,
+              }).toDestination()
+            );
+          i === 2 &&
+            setBusOneFxTwoType(
+              new Chebyshev({
+                wet: 1,
+              }).toDestination()
+            );
+          break;
+        case "pitch-shift":
+          i === 1 &&
+            setBusOneFxOneType(
+              new PitchShift({
+                wet: 1,
+              }).toDestination()
+            );
+          i === 2 &&
+            setBusOneFxTwoType(
+              new PitchShift({
+                wet: 1,
+              }).toDestination()
+            );
+          break;
+        case "compressor":
+          i === 1 &&
+            setBusOneFxOneType(
+              new Compressor({
+                wet: 1,
+              }).toDestination()
+            );
+          i == 2 &&
+            setBusOneFxTwoType(
+              new Compressor({
+                wet: 1,
+              }).toDestination()
+            );
+          break;
+        default:
+          break;
+      }
+    });
+  }, [busOneFxOneChoice, busOneFxTwoChoice]);
 
   useEffect(() => {
-    switch (busOneFxOneChoice) {
-      case "delay":
-        setBusOneFxOneControls(<Delay controls={busOneFxOneType} />);
-        break;
-      case "reverb":
-        setBusOneFxOneControls(<Reverber controls={busOneFxOneType} />);
-        break;
-      case "chebyshev":
-        setBusOneFxOneControls(<Chebyshever controls={busOneFxOneType} />);
-        break;
-      case "chorus":
-        setBusOneFxOneControls(<Choruser controls={busOneFxOneType} />);
-        break;
-      case "compressor":
-        setBusOneFxOneControls(<Compress controls={busOneFxOneType} />);
-        break;
-      default:
-        break;
-    }
-  }, [busOneFxOneChoice, busOneFxOneType]);
+    choices.current.forEach((choice, index) => {
+      const i = index + 1;
+      switch (choice) {
+        case "fx1":
+          setBusOneFxOneControls(null);
+          break;
+        case "fx2":
+          setBusOneFxTwoControls(null);
+        case "delay":
+          i === 1 &&
+            setBusOneFxOneControls(<Delay controls={busOneFxOneType} />);
+          i === 2 &&
+            setBusOneFxTwoControls(<Delay controls={busOneFxTwoType} />);
+          break;
+        case "reverb":
+          i === 1 &&
+            setBusOneFxOneControls(<Reverber controls={busOneFxOneType} />);
+          i === 2 &&
+            setBusOneFxTwoControls(<Reverber controls={busOneFxTwoType} />);
+          break;
+        case "chebyshev":
+          i === 1 &&
+            setBusOneFxOneControls(<Chebyshever controls={busOneFxOneType} />);
+          i === 2 &&
+            setBusOneFxTwoControls(<Chebyshever controls={busOneFxTwoType} />);
+          break;
+        case "pitch-shift":
+          i === 1 &&
+            setBusOneFxOneControls(<PitchShifter controls={busOneFxOneType} />);
+          i === 2 &&
+            setBusOneFxTwoControls(<PitchShifter controls={busOneFxTwoType} />);
+          break;
+        case "chorus":
+          i === 1 &&
+            setBusOneFxOneControls(<Choruser controls={busOneFxOneType} />);
+          i === 2 &&
+            setBusOneFxTwoControls(<Choruser controls={busOneFxTwoType} />);
+          break;
+        case "compressor":
+          i === 1 &&
+            setBusOneFxOneControls(<Compress controls={busOneFxOneType} />);
+          i === 2 &&
+            setBusOneFxTwoControls(<Compress controls={busOneFxTwoType} />);
+          break;
+        default:
+          break;
+      }
+    });
+  }, [busOneFxOneChoice, busOneFxOneType, busOneFxTwoChoice, busOneFxTwoType]);
 
   useEffect(() => {
-    if (busOneFxOneChoice === "FX1") busOneFxOneType.disconnect();
+    console.log(busOneFxOneChoice);
+    if (busOneFxOneChoice === "fx1") busOneFxOneType.disconnect();
     if (busOneFxOneType === null || busOneChannel.current === null) return;
     busOneChannel.current.connect(busOneFxOneType);
     return () => busOneFxOneType.disconnect();
   }, [busOneFxOneType, busOneFxOneChoice]);
 
-  // when busOneFxTwoChoice is selected it initiates new FX
   useEffect(() => {
-    switch (busOneFxTwoChoice) {
-      case "FX1":
-        setBusOneFxTwoType(null);
-        break;
-      case "reverb":
-        setBusOneFxTwoType(new Reverb({ wet: 1 }).toDestination());
-        break;
-      case "delay":
-        setBusOneFxTwoType(
-          new FeedbackDelay({
-            wet: 1,
-          }).toDestination()
-        );
-        break;
-      case "chorus":
-        setBusOneFxTwoType(
-          new Chorus({
-            frequency: 4,
-            delayTime: 2.5,
-            depth: 0.5,
-            wet: 1,
-          }).toDestination()
-        );
-        break;
-      case "chebyshev":
-        setBusOneFxTwoType(
-          new Chebyshev({
-            wet: 1,
-            order: 1,
-          }).toDestination()
-        );
-        break;
-      case "pitch-shift":
-        setBusOneFxTwoType(
-          new PitchShift({
-            pitch: 24,
-            wet: 1,
-          }).toDestination()
-        );
-        break;
-      case "compressor":
-        setBusOneFxTwoType(
-          new Compressor({
-            compressor: 8,
-            wet: 1,
-          }).toDestination()
-        );
-        break;
-      default:
-        break;
-    }
-  }, [busOneFxTwoChoice]);
-
-  useEffect(() => {
-    switch (busOneFxTwoChoice) {
-      case "delay":
-        setBusOneFxTwoControls(<Delay controls={busOneFxTwoType} />);
-        break;
-      case "reverb":
-        setBusOneFxTwoControls(<Reverber controls={busOneFxTwoType} />);
-        break;
-      case "chebyshev":
-        setBusOneFxTwoControls(<Chebyshever controls={busOneFxTwoType} />);
-        break;
-      case "chorus":
-        setBusOneFxTwoControls(<Choruser controls={busOneFxTwoType} />);
-        break;
-      case "compressor":
-        setBusOneFxTwoControls(<Compress controls={busOneFxTwoType} />);
-        break;
-      default:
-        break;
-    }
-  }, [busOneFxTwoChoice, busOneFxTwoType]);
-
-  useEffect(() => {
-    if (busOneFxTwoChoice === "FX1") busOneFxTwoType.disconnect();
+    if (busOneFxTwoChoice === "fx2") busOneFxTwoType.disconnect();
     if (busOneFxTwoType === null || busOneChannel.current === null) return;
     busOneChannel.current.connect(busOneFxTwoType);
     return () => busOneFxTwoType.disconnect();
@@ -352,7 +341,6 @@ function Mixer({ song }) {
               eq={eqs.current[i]}
               track={track}
               tracks={tracks}
-              handleSetTracks={handleSetTracks}
               state={state}
               toggleBusOne={toggleBusOne}
             />
