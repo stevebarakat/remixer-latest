@@ -68,11 +68,6 @@ function Bus1({
         <>
           <div style={{ display: "flex", flexDirection: "column" }}>
             <select
-              onClick={(e) => {
-                MetaPress
-                  ? setBusOneFxOneOpen(true)
-                  : setBusOneFxOneOpen(false);
-              }}
               onChange={(e) => handleSetBusOneFxOneChoice(e.target.value)}
               className="effect-select"
             >
@@ -87,15 +82,10 @@ function Bus1({
           </div>
           <div style={{ display: "flex", flexDirection: "column" }}>
             <select
-              onClick={(e) => {
-                MetaPress
-                  ? setBusOneFxTwoOpen(true)
-                  : setBusOneFxTwoOpen(false);
-              }}
               onChange={(e) => handleSetBusOneFxTwoChoice(e.target.value)}
               className="effect-select"
             >
-              <option value="fx1">FX2</option>
+              <option value="fx2">FX2</option>
               <option value="reverb">Reverb</option>
               <option value="delay">Delay</option>
               <option value="chorus">Chorus</option>

@@ -48,12 +48,8 @@ function Mixer({ song }) {
   const handleSetBusOneFxTwoChoice = (value) => setBusOneFxTwoChoice(value);
   const [state, setState] = useState("stopped");
   const handleSetState = (value) => setState(value);
-  const [busOneActive, setBusOneActive] = useState([
-    false,
-    false,
-    false,
-    false,
-  ]);
+  let filledArray = Array.from({ length: tracks.length }, () => false);
+  const [busOneActive, setBusOneActive] = useState(filledArray);
   const [busOneFxOneControls, setBusOneFxOneControls] = useState(null);
   const [busOneFxTwoControls, setBusOneFxTwoControls] = useState(null);
 
@@ -135,6 +131,7 @@ function Mixer({ song }) {
       const i = index + 1;
       switch (choice) {
         case "fx1":
+          break;
         case "fx2":
           break;
         case "reverb":
@@ -226,6 +223,7 @@ function Mixer({ song }) {
           break;
         case "fx2":
           setBusOneFxTwoControls(null);
+          break;
         case "delay":
           i === 1 &&
             setBusOneFxOneControls(<Delay controls={busOneFxOneType} />);
