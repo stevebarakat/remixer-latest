@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   loaded,
   Player,
@@ -26,10 +26,10 @@ import Bus1 from "./Channels/Bus1";
 import ChannelStrip from "./Channels/ChannelStrips";
 import Loader from "./Loader";
 import Chebyshever from "./FX/Chebyshev";
+import useMeter from "./useMeter";
 
-function Mixer({ song }) {
+function Mixer({ song, isLoaded, handleSetIsLoaded }) {
   const tracks = song.tracks;
-  const requestRef = useRef();
   const channels = useRef([]);
   const players = useRef([]);
   const choices = useRef([]);
@@ -38,8 +38,6 @@ function Mixer({ song }) {
   const masterMeter = useRef(null);
   const busOneMeter = useRef(null);
   const busOneChannel = useRef(null);
-  const [meterVals, setMeterVals] = useState([]);
-  const [isLoaded, setIsLoaded] = useState(false);
   const [busOneFxOneType, setBusOneFxOneType] = useState(null);
   const [busOneFxOneChoice, setBusOneFxOneChoice] = useState(null);
   const handleSetBusOneFxOneChoice = (value) => setBusOneFxOneChoice(value);
@@ -105,24 +103,10 @@ function Mixer({ song }) {
   }, [tracks]);
 
   useEffect(() => {
-    loaded().then(() => setIsLoaded(true));
-  }, [setIsLoaded]);
+    loaded().then(() => handleSetIsLoaded(true));
+  }, [handleSetIsLoaded]);
 
-  // loop recursively to amimateMeters
-  const animateMeter = useCallback(() => {
-    meters.current.forEach((meter, i) => {
-      meterVals[i] = meter.getValue() + 85;
-      setMeterVals(() => [...meterVals]);
-    });
-    requestRef.current = requestAnimationFrame(animateMeter);
-  }, [meterVals]);
-
-  // triggers animateMeter
-  useEffect(() => {
-    requestAnimationFrame(animateMeter);
-    return () => cancelAnimationFrame(requestRef.current);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state]);
+  const meterVals = useMeter(channels.current);
 
   // when busOneFxOneChoice is selected it initiates new FX
   choices.current = [busOneFxOneChoice, busOneFxTwoChoice];

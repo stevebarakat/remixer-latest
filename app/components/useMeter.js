@@ -2,7 +2,7 @@ import { useEffect, useCallback, useRef, useState } from "react";
 import { Meter } from "tone";
 
 function useMeter(channels) {
-  const [meterVals, setMeterVals] = useState(new Float32Array());
+  const [meterVals, setMeterVals] = useState([]);
   const meters = useRef([]);
 
   const requestRef = useRef();

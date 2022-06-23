@@ -1,13 +1,11 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState } from "react";
 import { Destination } from "tone";
 import VuMeter from "./VuMeter";
 import { dBToPercent } from "~/utils/scale";
+import useMeter from "../useMeter";
 
-function MasterVol({ state, masterMeter, masterBusChannel }) {
-  const requestRef = useRef();
-  const [masterMeterVal, setMasterMeterVal] = useState(-12);
+function MasterVol({ state }) {
   const [masterVol, setMasterVol] = useState(0);
-  Destination.connect(masterMeter);
 
   function changeMasterVolume(e) {
     const value = parseInt(e.target.value, 10);
@@ -17,21 +15,7 @@ function MasterVol({ state, masterMeter, masterBusChannel }) {
     Destination.set({ volume: sv });
   }
 
-  const animateMeter = useCallback(() => {
-    setMasterMeterVal(masterMeter.getValue() + 85);
-    requestRef.current = requestAnimationFrame(animateMeter);
-  }, [masterMeter]);
-
-  useEffect(() => {
-    // if (state !== "started")
-    //   setTimeout(() => {
-    //     cancelAnimationFrame(requestRef.current);
-    //     setMasterMeterVal(-100);
-    //   }, 1000);
-    requestAnimationFrame(animateMeter);
-    return () => cancelAnimationFrame(requestRef.current);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state]);
+  const masterMeterVal = useMeter([Destination]);
 
   return (
     <div
