@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useFetcher } from "@remix-run/react";
 import { Knob } from "react-rotary-knob";
 import skin from "~/utils/skin";
 import VuMeter from "./VuMeter";
@@ -16,7 +15,6 @@ function ChannelStrip({
   state,
   toggleBusOne,
 }) {
-  const fetcher = useFetcher();
   const [isMuted, setIsMuted] = useState(track.mute);
   const [volume, setVolume] = useState(track.volume);
   const preFader = meterVal;
@@ -32,45 +30,20 @@ function ChannelStrip({
     const value = parseFloat(e.target.value, 10);
     const vol = Math.log(value + 101) / Math.log(113);
     const scaledVol = scale(vol, 0, 1, -100, 12);
-
     setVolume(value);
     channel.set({ volume: scaledVol });
-    fetcher.submit(
-      {
-        actionName: "changeVolume",
-        track: JSON.stringify(track),
-        volume: value,
-      },
-      { method: "post", action: "/actions", replace: true }
-    );
   }
 
   // THIS IS WHERE PAN IS SET
   function changePan(e) {
     const pan = e.target.value;
     channel.set({ pan });
-    fetcher.submit(
-      {
-        actionName: "changePan",
-        track: JSON.stringify(track),
-        pan,
-      },
-      { method: "post", action: "/actions", replace: true }
-    );
   }
 
   // THIS IS WHERE SOLO IS SET
   function changeSolo(e) {
     const solo = e.target.checked;
     channel.set({ solo });
-    fetcher.submit(
-      {
-        actionName: "changeSolo",
-        track: JSON.stringify(track),
-        solo,
-      },
-      { method: "post", action: "/actions", replace: true }
-    );
   }
 
   // THIS IS WHERE MUTE IS SET
@@ -78,55 +51,23 @@ function ChannelStrip({
     const mute = e.target.checked;
     setIsMuted(mute);
     channel.set({ mute });
-    fetcher.submit(
-      {
-        actionName: "changeMute",
-        track: JSON.stringify(track),
-        mute,
-      },
-      { method: "post", action: "/actions", replace: true }
-    );
   }
 
   // THIS IS WHERE HIGH EQ IS SET
   function changeHighEqLevel(val) {
     eq.high.value = val;
-    fetcher.submit(
-      {
-        actionName: "changeHighEqLevel",
-        track: JSON.stringify(track),
-        highEqLevel: val,
-      },
-      { method: "post", action: "/actions", replace: true }
-    );
     setHighEqLevel(val);
   }
 
   // THIS IS WHERE MID EQ IS SET
   function changeMidEqLevel(val) {
     eq.mid.value = val;
-    fetcher.submit(
-      {
-        actionName: "changeMidEqLevel",
-        track: JSON.stringify(track),
-        midEqLevel: val,
-      },
-      { method: "post", action: "/actions", replace: true }
-    );
     setMidEqLevel(val);
   }
 
   // THIS IS WHERE LOW EQ IS SET
   function changeLowEqLevel(val) {
     eq.low.value = val;
-    fetcher.submit(
-      {
-        actionName: "changeLowEqLevel",
-        track: JSON.stringify(track),
-        lowEqLevel: val,
-      },
-      { method: "post", action: "/actions", replace: true }
-    );
     setLowEqLevel(val);
   }
 
@@ -135,67 +76,58 @@ function ChannelStrip({
       <div className="fader-wrap">
         <div className="fx-labels">EQ</div>
         <div id="hi">
-          <fetcher.Form method="post" action="/actions">
-            <input type="hidden" name="actionName" value="changeHighEqLevel" />
-            <Knob
-              className="knob"
-              min={-8}
-              max={8}
-              preciseMode={true}
-              unlockDistance={0}
-              rotateDegrees={180}
-              clampMin={40}
-              clampMax={320}
-              defaultValue={track.highEqLevel}
-              value={highEqLevel}
-              onChange={changeHighEqLevel}
-              step={0.01}
-              skin={skin}
-              track={track}
-            />
-          </fetcher.Form>
+          <Knob
+            className="knob"
+            min={-8}
+            max={8}
+            preciseMode={true}
+            unlockDistance={0}
+            rotateDegrees={180}
+            clampMin={40}
+            clampMax={320}
+            defaultValue={track.highEqLevel}
+            value={highEqLevel}
+            onChange={changeHighEqLevel}
+            step={0.01}
+            skin={skin}
+            track={track}
+          />
         </div>
         <div id="mid">
-          <fetcher.Form method="post" action="/actions">
-            <input type="hidden" name="actionName" value="changeMidEqLevel" />
-            <Knob
-              onChange={changeMidEqLevel}
-              className="knob"
-              min={-8}
-              max={8}
-              preciseMode={true}
-              unlockDistance={0}
-              rotateDegrees={180}
-              clampMin={40}
-              clampMax={320}
-              defaultValue={track.midEqLevel}
-              value={midEqLevel}
-              step={0.01}
-              skin={skin}
-              track={track}
-            />
-          </fetcher.Form>
+          <Knob
+            onChange={changeMidEqLevel}
+            className="knob"
+            min={-8}
+            max={8}
+            preciseMode={true}
+            unlockDistance={0}
+            rotateDegrees={180}
+            clampMin={40}
+            clampMax={320}
+            defaultValue={track.midEqLevel}
+            value={midEqLevel}
+            step={0.01}
+            skin={skin}
+            track={track}
+          />
         </div>
         <div id="low">
-          <fetcher.Form method="post" action="/actions">
-            <input type="hidden" name="actionName" value="changeLowEqLevel" />
-            <Knob
-              onChange={changeLowEqLevel}
-              className="knob"
-              min={-8}
-              max={8}
-              preciseMode={true}
-              unlockDistance={0}
-              rotateDegrees={180}
-              clampMin={40}
-              clampMax={320}
-              defaultValue={track.lowEqLevel}
-              value={lowEqLevel}
-              step={0.01}
-              skin={skin}
-              track={track}
-            />
-          </fetcher.Form>
+          <Knob
+            onChange={changeLowEqLevel}
+            className="knob"
+            min={-8}
+            max={8}
+            preciseMode={true}
+            unlockDistance={0}
+            rotateDegrees={180}
+            clampMin={40}
+            clampMax={320}
+            defaultValue={track.lowEqLevel}
+            value={lowEqLevel}
+            step={0.01}
+            skin={skin}
+            track={track}
+          />
         </div>
       </div>
       <div className="solo-mute">
